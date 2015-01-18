@@ -1,0 +1,79 @@
+* kadai2_4nor.cir
+***********************************************************************
+* Set supply and library
+***********************************************************************
+.INCLUDE mos_model3
+.options temp=27                * Nominal temperature
+* Save results of simulation for viewing
+.options post
+***********************************************************************
+* Define power supply
+***********************************************************************
+Vdd     Vdd     0       2.5
+***********************************************************************
+* Define Subcircuits
+***********************************************************************
+.subckt inv In Out Vdd
+m1      Out In 0 0      cmosn l=0.25u w=2u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=4u
+.ends
+
+.subckt inv2 In Out Vdd
+m1      Out In 0 0      cmosn l=0.25u w=6.20u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=12.4u
+.ends
+
+.subckt inv3 In Out Vdd
+m1      Out In 0 0      cmosn l=0.25u w=40u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=80u
+.ends
+
+.SUBCKT NOR2 In1 In2 Out Vdd
+MP1	Out   In1   1   Vdd    CMOSP W=95u L=0.25u
+MP2	  1   In2 Vdd   Vdd    CMOSP W=95.39u L=0.25u
+MN2	Out   In2   0     0    CMOSN W=23.39u L=0.25u
+MN1	Out   In1   0     0    CMOSN W=23.39u L=0.25u
+.ENDS 
+
+.SUBCKT NAND2 In1 In2 Out Vdd
+MP1	Out  In1 Vdd Vdd     CMOSP W=36.39u L=0.25u
+MP2	Out  In2 Vdd Vdd     CMOSP W=36.39u L=0.25u
+MN2	Out  In2   1   0     CMOSN W=36.39u L=0.25u
+MN1	  1  In1   0   0     CMOSN W=36.39u L=0.25u
+.ENDS
+
+
+
+***********************************************************************
+* Stimulus
+***********************************************************************
+* Format of pulse input:
+* pulse v_initial v_final t_delay t_rise t_fall t_pulsewidth t_period
+V1     XA      0       PULSE(0 2.5 1ns 0.1ns 0.1ns 4ns 100ns)
+V2      XB      0       PULSE(0 2.5 11ns 0.1ns 0.1ns 4ns 100ns)
+V3      XC      0       PULSE(0 2.5 21ns 0.1ns 0.1ns 4ns 100ns)
+V4      XD      0       PULSE(0 2.5 31ns 0.1ns 0.1ns 4ns 100ns)
+***********************************************************************
+* Top level simulation netlist
+***********************************************************************
+* ??? Add more of the netlist here
+x1  XA  A Vdd inv
+x2  XB  B Vdd inv
+x3  XC  C Vdd inv
+x4  XD  D Vdd inv
+
+X1Nand   A B X1Nand_out Vdd NAND2
+X2Nand   C D  X2Nand_out Vdd NAND2
+ 
+X1Nor X1Nand_out X2Nand_out f Vdd NOR2
+
+
+
+*xnand  A B C D NOUT Vdd NAND
+*x5 NOUT F Vdd inv2
+.tran .001ns 40ns
+.plot TRAN V(A) V(B) V(C) V(D) V(vdd) V(XA) V(XB) V(XC) V(XD) V(NOUT) V(F)  V(x1nand_out)  V(x2nand_out)
+***********************************************************************
+* End of Deck
+***********************************************************************
+.end

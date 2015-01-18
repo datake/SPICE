@@ -1,0 +1,63 @@
+* inverter.cir
+***********************************************************************
+* Set supply and library
+***********************************************************************
+.INCLUDE mos_model3
+.options temp=27                * Nominal temperature
+* Save results of simulation for viewing
+.options post
+***********************************************************************
+* Define power supply
+***********************************************************************
+Vdd     Vdd     0       2.5
+***********************************************************************
+* Define Subcircuits
+***********************************************************************
+.subckt inv In Out Vdd
+m1      Out In 0 0      cmosn l=0.25u w=2u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=4u
+.ends
+
+.subckt inv2 In Out Vdd
+m1      Out In 0 0      cmosn l=0.25u w=11.70u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=23.39u
+.ends
+
+.SUBCKT NAND4 In1 In2 In3 In4 Out Vdd
+MP1	Out  In1 Vdd Vdd     CMOSP W=6.84u L=0.25u
+MP2	Out  In2 Vdd Vdd     CMOSP W=6.84u L=0.25u
+MP3	Out  In3 Vdd Vdd     CMOSP W=6.84u L=0.25u
+MP4	Out  In4 Vdd Vdd     CMOSP W=6.84u L=0.25u
+MN4	Out  In4   3   0     CMOSN W=13.68u L=0.25u
+MN3	3    In3   2   0     CMOSN W=13.68u L=0.25u
+MN2	2    In2   1   0     CMOSN W=13.68u L=0.25u
+MN1	1    In1   0   0     CMOSN W=13.68u L=0.25u
+.ENDS
+
+
+***********************************************************************
+* Stimulus
+***********************************************************************
+* Format of pulse input:
+* pulse v_initial v_final t_delay t_rise t_fall t_pulsewidth t_period
+V1     XA      0       PULSE(0 2.5 1ns 0.1ns 0.1ns 4ns 100ns)
+V2      XB      0       PULSE(0 2.5 11ns 0.1ns 0.1ns 4ns 100ns)
+V3      XC      0       PULSE(0 2.5 21ns 0.1ns 0.1ns 4ns 100ns)
+V4      XD      0       PULSE(0 2.5 31ns 0.1ns 0.1ns 4ns 100ns)
+***********************************************************************
+* Top level simulation netlist
+***********************************************************************
+* ??? Add more of the netlist here
+*C1 Y 0 240f
+x1  XA  A Vdd inv
+x2  XB  B Vdd inv
+x3  XC  C Vdd inv
+x4  XD  D Vdd inv
+xnand  A B C D NOUT Vdd NAND4
+x5 NOUT F Vdd inv2
+.tran .001ns 40ns
+.plot TRAN V(A) V(B) V(C) V(D) V(vdd) V(XA) V(XB) V(XC) V(XD) V(NOUT) V(F)
+***********************************************************************
+* End of Deck
+***********************************************************************
+.end
