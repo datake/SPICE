@@ -1,0 +1,92 @@
+* kadai3-2-n16-pi.cir
+***********************************************************************
+* Set supply and library
+***********************************************************************
+.INCLUDE mos_model3
+.options temp=27                * Nominal temperature
+* Save results of simulation for viewing
+.options post
+***********************************************************************
+* Define power supply
+***********************************************************************
+Vdd     Vdd     0       2.5
+***********************************************************************
+* Define Subcircuits
+***********************************************************************
+.subckt inv1 In Out Vdd
+m1      Out In 0 0      cmosn l=0.25u w=32u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=64u
+.ends
+
+.subckt inv2 In Out Vdd
+m1      Out In 0 0      cmosn l=0.25u w=4u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=2u
+.ends
+
+
+.subckt pi-model-wiring-16 Out 
+R1	In	V1	20
+R2	V1	V2	20
+R3	V2	V3	20
+R4	V3	V4	20
+R5	V4	V5	20
+R6	V5	V6	20
+R7	V6	V7	20
+R8	V7	V8	20
+R9	V8	V9	20
+R10	V9	V10	20
+R11	V10	V11	20
+R12	V11	V12	20
+R13	V12	V13	20
+R14	V13	V14	20
+R15	V14	V15	20
+R16	V15	Out	20
+
+
+
+
+C0	In	0	20f
+C1	V1	0 	40f
+C2	V2	0 	40f
+C3	V3	0 	40f
+C4	V4	0 	40f  
+C5	V5	0 	40f
+C6	V6	0 	40f
+C7	V7	0 	40f
+C8	V8	0 	40f  
+C9	V9	0 	40f
+C10	V10	0 	40f
+C11	V11	0 	40f
+C12	V12	0 	40f  
+C13	V13	0 	40f
+C14	V14	0 	40f
+C15	V15	0 	40f
+C16	Out	0 	20f  
+
+.ends
+
+
+
+
+***********************************************************************
+* Stimulus
+***********************************************************************
+* Format of pulse input:
+* pulse v_initial v_final t_delay t_rise t_fall t_pulsewidth t_period
+Vin     in      0       PULSE(0 2.5  1ns 0.1ns 0.1ns 4ns 10 ns)
+***********************************************************************
+* Top level simulation netlist
+***********************************************************************
+* ??? Add more of the netlist here
+x1 in A Vdd inv1
+x2 A  B  pi-model-wiring-16
+x3 B out Vdd inv2
+c1 out 0 12f
+
+
+.tran .001ns 20ns
+.plot TRAN V(in) V(out)
+***********************************************************************
+* End of Deck
+***********************************************************************
+.end

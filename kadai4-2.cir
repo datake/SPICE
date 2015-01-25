@@ -1,0 +1,48 @@
+
+* kadai4-2.cir
+***********************************************************************
+* Set supply and library
+***********************************************************************
+.INCLUDE mos_model3
+.options temp=27                * Nominal temperature
+* Save results of simulation for viewing
+.options post
+***********************************************************************
+* Define power supply
+***********************************************************************
+Vdd1     Vdd     0       PWL(0.0n 2.5 1.0n 2.5 
++							 1.1n 0 6.0n 0
++							 6.1n 0 10.0n 0)
+***********************************************************************
+* Define Subcircuits
+***********************************************************************
+.subckt inv In Out Vdd
+m1      Out In 0 0      cmosn l=0.25u w=3u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=6u
+.ends
+.subckt inv2 In Out Vdd
+m1      Out In 0 0      cmosn l=0.25u w=2u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=4u
+.ends
+.subckt inv3 In Out Vdd
+m1      Out In 0 0      cmosn l=0.25u w=75u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=150u
+.ends
+***********************************************************************
+* Stimulus
+***********************************************************************
+* Format of pulse input:
+* pulse v_initial v_final t_delay t_rise t_fall t_pulsewidth t_period
+Vin     A      0       PULSE(0 2.5 1ns 0.1ns 0.1ns 4ns 10ns)
+***********************************************************************
+* Top level simulation netlist
+***********************************************************************
+* ??? Add more of the netlist here
+C1 Y 0 2000f
+x1  A  Y Vdd inv
+.tran .001ns 10ns
+.plot TRAN V(A) V(Y) V(vdd) 
+***********************************************************************
+* End of Deck
+***********************************************************************
+.end
