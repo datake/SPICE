@@ -1,5 +1,5 @@
 
-* kadai4-2.cir
+* kadai4-2-inv2-7-14.cir  mean(-i (vdd)) =  7.114219e-04
 ***********************************************************************
 * Set supply and library
 ***********************************************************************
@@ -22,8 +22,8 @@ m1      Out In 0 0      cmosn l=0.25u w=3u
 m2      Out In Vdd Vdd  cmosp l=0.25u w=6u
 .ends
 .subckt inv2 In Out Vdd
-m1      Out In 0 0      cmosn l=0.25u w=6u
-m2      Out In Vdd Vdd  cmosp l=0.25u w=12u
+m1      Out In 0 0      cmosn l=0.25u w=7u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=14u
 .ends
 .subckt inv3 In Out Vdd
 m1      Out In 0 0      cmosn l=0.25u w=75u

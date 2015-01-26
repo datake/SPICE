@@ -1,5 +1,5 @@
 
-* kadai4-2.cir
+* kadai4-1.cir
 ***********************************************************************
 * Set supply and library
 ***********************************************************************
@@ -10,24 +10,16 @@
 ***********************************************************************
 * Define power supply
 ***********************************************************************
-Vin    in     0       PWL(0.0n 2.5 1.0n 2.5 
+Vin    A     0       PWL(0.0n 2.5 1.0n 2.5 
 +							 1.1n 0 6.0n 0
 +							 6.1n 0 10.0n 0)
 Vdd Vdd 0 2.5
 ***********************************************************************
 * Define Subcircuits
 ***********************************************************************
-.subckt inv1 In Out Vdd
-m1      Out In 0 0      cmosn l=0.25u w=3u
-m2      Out In Vdd Vdd  cmosp l=0.25u w=6u
-.ends
-.subckt inv2 In Out Vdd
-m1      Out In 0 0      cmosn l=0.25u w=6u
-m2      Out In Vdd Vdd  cmosp l=0.25u w=12u
-.ends
-.subckt inv3 In Out Vdd
-m1      Out In 0 0      cmosn l=0.25u w=75u
-m2      Out In Vdd Vdd  cmosp l=0.25u w=150u
+.subckt inv In Out Vdd
+m1      Out In 0 0      cmosn l=0.25u w=2u
+m2      Out In Vdd Vdd  cmosp l=0.25u w=4u
 .ends
 ***********************************************************************
 * Stimulus
@@ -39,13 +31,10 @@ m2      Out In Vdd Vdd  cmosp l=0.25u w=150u
 * Top level simulation netlist
 ***********************************************************************
 * ??? Add more of the netlist here
-C1 C 0 2000f
-x1  in  A Vdd inv1
-x2  A  B Vdd inv2
-x3  B  C Vdd inv3
-
+C1 Y 0 64f
+x1  A  Y Vdd inv
 .tran .001ns 10ns
-.plot TRAN V(A) V(B) V(C) V(D) 
+.plot TRAN V(A) V(Y) V(vdd) 
 ***********************************************************************
 * End of Deck
 ***********************************************************************
